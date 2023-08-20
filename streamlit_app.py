@@ -4,10 +4,9 @@ from langchain.chat_models import ChatOpenAI
 from langchain.prompts.chat import (ChatPromptTemplate,
                                     HumanMessagePromptTemplate,
                                     SystemMessagePromptTemplate)
-from langchain.document_loaders import UnstructuredPDFLoader
-import tempfile
+from langchain.document_loaders import WebBaseLoader
 
-st.title("Ask to PDF")
+st.title("Web Blogger")
 
 openai_api_key = st.sidebar.text_input(
     "OpenAI API Key",
@@ -15,52 +14,48 @@ openai_api_key = st.sidebar.text_input(
     type="password",
 )
 
-uploaded_file = st.file_uploader("Upload PDF File", type=["pdf"])
-if uploaded_file is not None:
-    with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-        temp_file.write(uploaded_file.read())
-        file_path = temp_file.name
-        st.session_state['file_path'] = file_path
+# Initialize state variables
+url = st.text_input("Enter website URL")
+website_string = ""
+blog_post = ""
 
-def load_pdf(file_path):
-    loader = UnstructuredPDFLoader(file_path, mode="elements", strategy="fast")
+# Load website content as Document object from the URL
+def load_website(url):
+    loader = WebBaseLoader(url)
     docs = loader.load()
     return docs
 
-pdf_doc = None
-pdf_string = ""
-answers = ""
-
-
-if 'file_path' in st.session_state:
-    pdf_doc = load_pdf(st.session_state['file_path'])
-    pdf_string = "".join([doc.page_content for doc in pdf_doc])
-    
-question = st.text_input("Question")
-
-def pdfQuestionAnswerer(question, pdf_string):
+# Generate medium blog post from the website content
+def mediumBlogPostGenerator(website_string):
     chat = ChatOpenAI(
         model="gpt-3.5-turbo-16k",
         openai_api_key=openai_api_key,
-        temperature=0
+        temperature=0.7
     )
-    system_template = """You are an assistant that can answer questions about a PDF file based on its content."""
+    system_template = """You are an assistant designed to generate a medium blog post from the given website content."""
     system_message_prompt = SystemMessagePromptTemplate.from_template(system_template)
-    human_template = """Please provide answers to the following questions based on the content of the PDF file: '{pdf_string}'.
-    
-    Question : {question}"""
+    human_template = """Please generate a medium blog post based on the content of the website: '{website_string}'."""
     human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
     chat_prompt = ChatPromptTemplate.from_messages(
         [system_message_prompt, human_message_prompt]
     )
 
     chain = LLMChain(llm=chat, prompt=chat_prompt)
-    result = chain.run(question=question, pdf_string=pdf_string)
-    return result
+    result = chain.run(website_string=website_string)
+    return result # returns string   
 
-if st.button("Submit"):
-    if not openai_api_key.startswith("sk-"):
-        st.warning("Please enter your OpenAI API Key!", icon="⚠️")
-    elif pdf_string and question:
-        answers = pdfQuestionAnswerer(question,pdf_string)
-        st.markdown(f"**Answer:** {answers}")
+# Get input from the user
+if not openai_api_key.startswith("sk-"):
+    st.warning("Please enter your OpenAI API Key!", icon="⚠️")
+else:
+    if url:
+        website_doc = load_website(url)
+        website_string = "".join([doc.page_content for doc in website_doc])
+
+    # Put a submit button with an appropriate title
+    if st.button("Generate Blog Post"):
+        if website_string:
+            blog_post = mediumBlogPostGenerator(website_string)
+
+    # Call functions only if all user inputs are taken and the button is clicked
+    st.markdown(blog_post)
