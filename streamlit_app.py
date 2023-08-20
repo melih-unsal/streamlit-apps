@@ -44,18 +44,16 @@ def mediumBlogPostGenerator(website_string):
     result = chain.run(website_string=website_string)
     return result # returns string   
 
-# Get input from the user
-if not openai_api_key.startswith("sk-"):
-    st.warning("Please enter your OpenAI API Key!", icon="⚠️")
-else:
-    if url:
-        website_doc = load_website(url)
-        website_string = "".join([doc.page_content for doc in website_doc])
 
-    # Put a submit button with an appropriate title
-    if st.button("Generate Blog Post"):
-        if website_string:
-            blog_post = mediumBlogPostGenerator(website_string)
+if url:
+    website_doc = load_website(url)
+    website_string = "".join([doc.page_content for doc in website_doc])
 
-    # Call functions only if all user inputs are taken and the button is clicked
-    st.markdown(blog_post)
+# Put a submit button with an appropriate title
+if st.button("Generate Blog Post"):
+    if not openai_api_key.startswith("sk-"):
+        st.warning("Please enter your OpenAI API Key!", icon="⚠️")
+    elif website_string:
+        blog_post = mediumBlogPostGenerator(website_string)
+
+st.markdown(blog_post)
