@@ -27,7 +27,7 @@ Musk joined the social media service Twitter in 2009, and, as @elonmusk, he beca
 Musk was critical of Twitter’s commitment to principles of free speech, in light of the company’s content-moderation policies. Early in April 2022, Twitter’s filings with the SEC disclosed that Musk had bought more than 9 percent of the company. Shortly thereafter Twitter announced that Musk would join the company’s board, but Musk decided against that and made a bid for the entire company, at a value of $54.20 a share, for $44 billion. Twitter’s board accepted the deal, which would make him sole owner of the company. Musk stated that his plans for the company included “enhancing the product with new features, making the algorithms open source to increase trust, defeating the spam bots, and authenticating all humans.” In July 2022 Musk announced that he was withdrawing his bid, stating that Twitter had not provided sufficient information about bot accounts and claiming that the company was in “material breach of multiple provisions” of the purchase agreement. Bret Taylor, the chair of Twitter’s board of directors, responded by saying that the company was “committed to closing the transaction on the price and terms agreed upon with Mr. Musk.” Twitter sued Musk to force him to buy the company. In September 2022, Twitter’s shareholders voted to accept Musk’s offer. Facing a legal battle, Musk ultimately proceeded with the deal, and it was completed in October.
 """
 
-st.title("Elon Musk Clone v2")
+st.title("Elon Musk Clone")
 
 openai_api_key = st.sidebar.text_input(
     "OpenAI API Key",
