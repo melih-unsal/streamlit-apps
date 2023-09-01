@@ -32,9 +32,9 @@ def mediumBlogPostGenerator(website_string):
         openai_api_key=openai_api_key,
         temperature=0.7
     )
-    system_template = """You are an assistant designed to generate a medium blog post from the given website content."""
+    system_template = """You are an AI writer tasked with generating a creative and interesting Medium article in markdown format."""
     system_message_prompt = SystemMessagePromptTemplate.from_template(system_template)
-    human_template = """Please generate a medium blog post based on the content of the website: '{website_string}'."""
+    human_template = """{website_string}"""
     human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
     chat_prompt = ChatPromptTemplate.from_messages(
         [system_message_prompt, human_message_prompt]
